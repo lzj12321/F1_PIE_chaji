@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf8">
+    <style>
+        h1{
+            text-align: center;
+            font-size: 90px;
+            font-weight: bolder;
+            color: royalblue;
+            margin-top: 40px;
+            margin-bottom: 0px;
+        }
+        h2{
+            margin-top: 0px;
+            margin-right: 300px;
+            margin-bottom: 10px;
+            text-align: right;
+            font-size: 60px;
+            color: royalblue;
+            font-weight: bolder;
+        }
+        #dataTable{
+            margin-left: 0px;
+            margin-top: 60px;
+            font-size: 40px;
+            font-weight: bolder;
+            border-collapse: collapse;
+            border: 4px solid royalblue;
+            text-align: center;
+            color: goldenrod;
+        }
+        td,tr,tbody,thead,th{
+            border: 4px solid royalblue;
+            width: 220px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body background="./bg.jpg">
+<div id="tableDiv">
+    <h1 id="headTitle">{{title}}</h1>
+    <h2>{{date}}</h2>
+    <h1 v-show='!isDataAvailable'>查询数据失败，请联系相关人员！</h1>
+    <table id="dataTable" v-show='isDataAvailable'>
+        <thead>
+                <th v-for='item in tableTitle'>{{item}}</th>
+        </thead>
+        <tbody>
+            <tr v-for='item,index in productionData'>
+                <td>{{item.product}}</td>
+                <td>{{item.device}}</td>
+                <td>{{item.hourProduction}}</td>
+                <td :style="parseInt(item.num1)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num1|dataSerial}}</td>
+                <td :style="parseInt(item.num2)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num2|dataSerial}}</td>
+                <td :style="parseInt(item.num3)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num3|dataSerial}}</td>
+                <td :style="parseInt(item.num4)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num4|dataSerial}}</td>
+                <td :style="parseInt(item.num5)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num5|dataSerial}}</td>
+                <td :style="parseInt(item.num6)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num6|dataSerial}}</td>
+                <td :style="parseInt(item.num7)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num7|dataSerial}}</td>
+                <td :style="parseInt(item.num8)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num8|dataSerial}}</td>
+                <td :style="parseInt(item.num9)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num9|dataSerial}}</td>
+                <td :style="parseInt(item.num10)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num10|dataSerial}}</td>
+                <td :style="parseInt(item.num11)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num11|dataSerial}}</td>
+                <td :style="parseInt(item.num12)<parseInt(item.hourProduction)?unreachProduction:reachProduction">{{item.num12|dataSerial}}</td>
+                <td>{{totalProduction[index]|dataSerial}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="./vue.min.js"></script>
+<script src="./axios.min.js"></script>
+<script>
+    const tableData=new Vue({
+        el:"#tableDiv",
+        data:{
+            date:'test',
+            title:'test',
+            isDataAvailable: true,
+            page:0,
+            maxRowPerPage:11,
+            tableTitle: [],
+            productionData:[],
+            totalProduction:[],
+
+            reachProduction:{
+                'color':'green',
+            },
+            unreachProduction:{
+                'color':'red',
+            }
+        },
+
+        methods: {
+	    dataFilter(productionData){
+		    for(var i=0;i<productionData.length();++i){
+			    if(productionData[i].num1==0&&productionData[i].num2==0&&productionData[i].num3==0&&productionData[i].num4==0&&productionData[i].num5==0&&productionData[i].num6==0&&productionData[i].num7==0&&productionData[i].num8==0&&productionData[i].num9==0&&productionData[i].num10==0&&productionData[i].num11==0&&productionData[i].num12==0){
+//				    productionData.splice(i,i);
+				    console.log(i);
+			    }
+		    }
+		    return productionData;
+	    },
+            updateData(){
+                var _date=new Date();
+                this.date=_date.toLocaleDateString();
+                var _currHour=_date.getHours();
+                if(_currHour>=8&&_currHour<20){
+                    this.title='插机白班生产动态';
+                }else{
+                    this.title='插机夜班生产动态';
+                }
+                axios.get(
+                './chaji.php',{
+                    params:{
+                        action:'getProductionData',
+                        page:this.page,
+                        maxRowPerPage:this.maxRowPerPage,
+                    }
+                })
+                .then(response=>{
+                    this.isDataAvailable=true;
+                    if(response.data.length==0){
+                        this.page=0;
+                        return;
+                    }
+//                    this.productionData=this.dataFilter(response.data);
+                    this.productionData=response.data;
+	            this.totalProduction=[];
+                    for(var i=0;i<this.productionData.length;++i){
+			    this.totalProduction.push(0);
+			    for(var j=1;j<13;++j){  
+				    this.totalProduction[i]+=parseInt(this.productionData[i]['num'+String(j)]);
+                		console.log(this.productionData[i]['num'+String(j)]<this.productionData[i]['hourProduction']);
+			    }
+                    }
+                    if(this.productionData.length<this.maxRowPerPage){
+                        this.page=0;
+                    }else{
+                        this.page++;
+                    }
+                })
+                .catch(error=>{
+                    this.isDataAvailable=false;
+                    console.log('get data error!');
+                })
+            }
+        },
+
+        mounted() {
+            this.tableTitle=[];
+            var _tableTitle=new Array();
+            _tableTitle.push("型号");
+            _tableTitle.push("设备");
+            _tableTitle.push("小时计划产量");
+            var _currTime=new Date();
+            var _currHour=_currTime.getHours();
+            if(_currHour>=8&&_currHour<20){
+                for(var i=8;i<20;++i){
+                    var _item=i.toString()+":00-"+(i+1).toString()+":00";
+                    _tableTitle.push(_item);
+                }
+                this.title='插机白班生产动态';
+            }else{
+                for(var i=20;i<32;++i){
+                    var _item=(i%24).toString()+":00-"+((i+1)%24).toString()+":00";
+                    _tableTitle.push(_item);
+                }
+                this.title='插机夜班生产动态';
+            }
+            _tableTitle.push("班次总产量")
+            this.tableTitle=_tableTitle;
+
+            this.updateData();
+            setInterval(()=>{
+                this.updateData();
+            },5000);
+        },
+
+        filters:{
+            dataSerial(_data){
+                if(_data==undefined){
+                    return "NaN";
+                }
+                if(_data==null){
+                    return "NaN";
+                }
+                return _data;
+            }
+        }
+    })
+</script>
+</body>

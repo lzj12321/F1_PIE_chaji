@@ -1,0 +1,121 @@
+server:
+  ip: 127.0.0.1
+  port: 8888
+
+mysql:
+  ip: 127.0.0.1
+  user: te
+  password: '123456'
+  database: robot
+
+workshop: E
+
+timeStamp:
+  hour_20: num12
+  hour_21: num13
+  hour_22: num14
+  hour_23: num15
+  hour_0: num16
+  hour_1: num17
+  hour_2: num18
+  hour_3: num19
+  hour_4: num20
+  hour_5: num21
+  hour_6: num22
+  hour_7: num23
+
+  hour_8: num0
+  hour_9: num1
+  hour_10: num2
+  hour_11: num3
+  hour_12: num4
+  hour_13: num5
+  hour_14: num6
+  hour_15: num7
+  hour_16: num8
+  hour_17: num9
+  hour_18: num10
+  hour_19: num11
+
+
+
+devices:
+  line1:
+    ip: 192.168.10.1
+    serial: line1
+    hourProduction: 23
+    productModel: AC20158
+    productMulti: 11
+    firmWareVersion: 1
+
+  line2:
+    ip: 192.168.10.1
+    serial: line2
+    hourProduction: 11
+    productModel: model_test
+    productMulti: 12
+    firmWareVersion: 1
+
+  line3:
+    ip: 192.168.10.1
+    serial: line3
+    hourProduction: 66
+    productModel: model_test
+    productMulti: 12
+    firmWareVersion: 1
+
+  line4:
+    ip: 192.168.10.1
+    serial: line4
+    hourProduction: 11
+    productModel: AC2113
+    productMulti: 12
+    firmWareVersion: 1
+
+  line5:
+    ip: 192.168.10.1
+    serial: line5
+    hourProduction: 22
+    productModel: AD2115
+    productMulti: 12
+    firmWareVersion: 1
+
+  line6:
+    ip: 192.168.10.1
+    serial: line6
+    hourProduction: 33
+    productModel: model123
+    productMulti: 12
+    firmWareVersion: 1
+
+  line7:
+    ip: 192.168.10.1
+    serial: line7
+    hourProduction: 44
+    productModel: AD2116
+    productMulti: 12
+    firmWareVersion: 1
+
+  line8:
+    ip: 192.168.10.1
+    serial: line8
+    hourProduction: 88
+    productModel: AC555
+    productMulti: 30
+    firmWareVersion: 1
+
+  line9:
+    ip: 192.168.10.1
+    serial: line9
+    hourProduction: mac test
+    productModel: model_test
+    productMulti: 12
+    firmWareVersion: 1
+
+  line10:
+    ip: 192.168.10.1
+    serial: line10
+    hourProduction: mac test
+    productModel: zxcv
+    productMulti: 12
+    firmWareVersion: 1
